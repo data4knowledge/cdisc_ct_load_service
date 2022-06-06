@@ -14,6 +14,7 @@ def read_root():
 def create_configuration(config: ConfigurationPost):
   saved_config = Configuration()
   saved_config.fix_start_date(config.start_date)
+  saved_config.set_release_list()
   return { 'status': 'ok' }
 
 # @app.post("/namespace")

@@ -12,5 +12,9 @@ class Store():
     self.__store.put(data, key)
 
   def get(self, key):
-    return self.__store.get(key)
+    data = self.__store.get(key)
+    if data == None:
+      return None
+    else:
+      return data['value']
 
