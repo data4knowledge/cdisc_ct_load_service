@@ -3,3 +3,4 @@ pydantic
 requests
 deta
 pytest
+pyyaml
