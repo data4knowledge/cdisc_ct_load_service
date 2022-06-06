@@ -22,13 +22,12 @@ class Configuration():
     self._read_start_date()
     self._read_releases()
 
-  def fix_start_date(self, requested_date):
+  def set_start_date(self, requested_date):
     self.start_date = self.__manifest.next_release_after(requested_date)
     self.__store.put(START_DATE, self._to_iso8601_str(self.start_date))
 
   def set_release_list(self):
     self.releases = self.__manifest.release_list(self.start_date)
-    print(self.releases)
     self.__store.put(RELEASES, json.dumps([self._to_iso8601_str(i) for i in self.releases]))
 
   def _read_start_date(self):

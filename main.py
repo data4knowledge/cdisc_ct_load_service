@@ -13,7 +13,7 @@ def read_root():
 @app.post("/configuration")
 def create_configuration(config: ConfigurationPost):
   saved_config = Configuration()
-  saved_config.fix_start_date(config.start_date)
+  saved_config.set_start_date(config.start_date)
   saved_config.set_release_list()
   return { 'status': 'ok' }
 
