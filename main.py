@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from model.configuration import Configuration
+from model.configuration import *
 
 VERSION = "0.1"
 SYSTEM_NAME = "d4k CT Load Microservice"
@@ -11,7 +11,9 @@ def read_root():
   return { 'version': VERSION, 'system': SYSTEM_NAME }
 
 @app.post("/configuration")
-def create_configuration(config: Configuration):
+def create_configuration(config: ConfigurationPost):
+  saved_config = Configuration()
+  saved_config.fix_start_date(config.start_date)
   return { 'status': 'ok' }
 
 # @app.post("/namespace")
