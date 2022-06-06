@@ -7,7 +7,11 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-  return {"Version":VERSION, "System": SYSTEM_NAME}
+  return { 'version': VERSION, 'system': SYSTEM_NAME }
+
+@app.post("/configuration")
+def create_configuration():
+  return { 'status': 'ok' }
 
 # @app.post("/namespace")
 # async def create_namespace(namespace: NamespacePost):

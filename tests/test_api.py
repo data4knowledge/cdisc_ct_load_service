@@ -8,6 +8,13 @@ def test_status():
   response = client.get("/")
   assert response.status_code == 200
   assert response.json() == {
-    'Version': '0.1', 
-    'System': 'd4k CT Load Microservice'
+    'version': '0.1', 
+    'system': 'd4k CT Load Microservice'
+  }
+
+def test_configuration_ok():
+  response = client.post("/configuration")
+  assert response.status_code == 200
+  assert response.json() == {
+    'status': 'ok'
   }
