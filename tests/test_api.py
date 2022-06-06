@@ -13,7 +13,11 @@ def test_status():
   }
 
 def test_configuration_ok():
-  response = client.post("/configuration")
+  body = {
+      'start_date': '2022-01-01'
+  }
+  response = client.post("/configuration", json=body)
+  print(response.json())
   assert response.status_code == 200
   assert response.json() == {
     'status': 'ok'
