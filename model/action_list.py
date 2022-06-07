@@ -1,11 +1,18 @@
-class Action():
-  
-  def to_store(self):
-    return { 'klass': self.__class__.__name__, 'data': self.to_json()}
+from model.manifest import Manifest
+from model.action_release import ActionRelease
+from store.store import Store
 
-  # def set_releases(self):
-  #   self.releases = self.__manifest.release_list(self.start_date)
-  #   self.__store.put(RELEASE, json.dumps([self._to_iso8601_str(i) for i in self.releases]))
+class ActionList():
+  
+  def __init__(self, config):
+    self.__store = Store("actions")
+    self.__manifest = Manifest()
+    self.__actions = []
+    self.__config = config
+
+  def add_releases(self):
+    dates = self.__manifest.release_list(self.__config.start_date)
+    self.__store.put("actions", [ActionRelease(i).to_store() for i in dates])
 
   # def set_thesauri(self):
   #   self.code_lists = [] # To come
@@ -15,13 +22,13 @@ class Action():
   #   self.code_lists = [] # To come
   #   self.__store.put(CODE_LIST, json.dumps(self.code_lists))
 
-  # def _read_release(self):
-  #   data = self.__store.get(RELEASE)
+  # def _read_actions(self):
+  #   data = self.__store.get("actions")
   #   if data == None:
-  #     self.releases = []
+  #     self.__actions = []
   #   else:
   #     data = json.loads(data)
-  #     self.releases = [self._from_iso8601_str(i) for i in data]
+  #     self.actions = [self._from_iso8601_str(i) for i in data]
     
   # def _read_thesauri(self):
   #   data = self.__store.get(THESAURUS)
