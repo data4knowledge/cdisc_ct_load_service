@@ -1,0 +1,1 @@
+{"id":"8a1a4ede-6034-458b-9a55-605babb5da00","space":23001,"runtime":"python3.9","name":"cdisc_ct_load_service","path":"cq8mqy","project":"a0c4l6ln","account":"144798365827","region":"eu-central-1","deps":["fastapi","pydantic","requests","deta","pytest","pyyaml"],"envs":null,"public":true,"log_level":"debug","cron":""}

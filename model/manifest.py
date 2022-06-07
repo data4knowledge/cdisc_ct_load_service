@@ -25,5 +25,9 @@ class Manifest():
         releases.append(manifest_date)
     return releases
 
+  def concept_scheme_list(self, release_date):
+    releases = []
+    return self.__manifest[release_date]["items"]
+
   def _from_iso8601_str(self, text):
     return datetime.strptime(text, '%Y-%m-%d').date()
