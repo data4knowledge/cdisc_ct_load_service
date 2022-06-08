@@ -6,14 +6,17 @@ from store.store import Store
 class ActionRelease(Action):
   release_date: str
 
-  def __init__(self, *initial_data, **kwargs):
-    print("ID:", initial_data)
+  def __init__(self, *args, **kwargs):
+    print("ID:", args)
     print("KW:", kwargs)
     self.release_date = kwargs.pop('release_date')
     self.__store = Store("actions")
     self.__manifest = Manifest()
     self.__config = Configuration()
-    super().__init__(*initial_data, **kwargs)
+    super().__init__(*args, **kwargs)
     
   def process(self):
-    list = self.__manifest.concept_scheme_list(self.release_date)
+    return self.__manifest.concept_scheme_list(self.release_date)
+
+  def to_preserve(self):
+    return { 'release_date': self.release_date }

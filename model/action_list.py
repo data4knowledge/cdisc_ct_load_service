@@ -28,7 +28,7 @@ class ActionList():
     del self.__actions[0]
     list = action.process()
     print("LIST:", list)
-    new_actions = [ActionScheme(**i).preserve() for i in list]
+    new_actions = [ActionScheme(scheme=k, date=v).preserve() for k, v in list.items()]
     print("REMAINING:", self.__actions)
     print("NEW:", new_actions)
     self.__store.put(new_actions + self.__actions, "list")

@@ -13,4 +13,6 @@ class Action():
       setattr(self, key, kwargs[key])
 
   def preserve(self):
-    return { 'klass': self.__class__.__name__, 'data': json.dumps(self.__dict__)}
+    print("KN:", self.__class__.__name__)
+    print("DICT:", self.__dict__)
+    return { 'klass': self.__class__.__name__, 'data': self.to_preserve()}
