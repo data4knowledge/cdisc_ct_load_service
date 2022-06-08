@@ -1,6 +1,6 @@
 from deta import Deta
 import os
-#import yaml
+import yaml
 
 class Drive():
     

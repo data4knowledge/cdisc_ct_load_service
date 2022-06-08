@@ -2,12 +2,13 @@ from typing import List
 from pydantic import BaseModel
 from datetime import date, datetime
 from store.store import Store
+from model.manifest import Manifest
 import json
 
 START_DATE = 'start_date'
 INITIAL_RELEASE_YEAR = 2007
 
-class ConfigurationPost(BaseModel):
+class ConfigurationIn(BaseModel):
   start_date: date
   
 class Configuration():
@@ -15,6 +16,7 @@ class Configuration():
 
   def __init__(self):
     self.__store = Store("name_value")
+    self.__manifest = Manifest()
     self._read_start_date()
 
   def set_start_date(self, requested_date):

@@ -26,7 +26,7 @@ class Manifest():
     return releases
 
   def concept_scheme_list(self, release_date):
-    releases = []
+    print("RD:", release_date)
     return self.__manifest[release_date]["items"]
 
   def _from_iso8601_str(self, text):
