@@ -5,33 +5,29 @@ from model.action_release import ActionRelease
 from model.action_scheme import ActionScheme
 from store.store import Store
 
+STORE_KEY = "list"
+
 class ActionList():
   
   def __init__(self):
-    self.__store = Store("actions")
+    self.__store = Store()
     self.__manifest = Manifest()
     self.__config = Configuration()
-    self.__actions = self.__store.get("list")
+    self.__actions = self.__store.get(STORE_KEY)
 
   def add_releases(self):
     dates = self.__manifest.release_list(self.__config.start_date)
-    self.__store.put([ActionRelease(release_date=self._to_iso8601_str(i)).preserve() for i in dates], "list")
+    self.__store.put([ActionRelease(release_date=i).preserve() for i in dates], STORE_KEY)
 
   def next(self):
     data = self.__actions[0]
-    print("PROCESS:", data)
     klass = globals()[data['klass']]
-    print("KLASS:", klass)
-    x = json.loads(data['data'])
-    action = klass(**x)
-    print("ACTION:", action)
+    action = klass(**data['data'])
     del self.__actions[0]
-    list = action.process()
-    print("LIST:", list)
-    new_actions = [ActionScheme(scheme=k, date=v).preserve() for k, v in list.items()]
-    print("REMAINING:", self.__actions)
-    print("NEW:", new_actions)
-    self.__store.put(new_actions + self.__actions, "list")
+    new_actions = action.process()
+    self.__store.put(new_actions + self.__actions, STORE_KEY)
+    self.__actions = self.__store.get(STORE_KEY)
 
-  def _to_iso8601_str(self, date):
-    return date.strftime("%Y-%m-%d")
+  def list(self):
+    return self.__actions
+  

@@ -4,3 +4,4 @@ requests
 deta
 pytest
 pyyaml
+py2neo

@@ -28,4 +28,4 @@ def create_configuration(config: ConfigurationIn):
 def create_action():
   actions = ActionList()
   actions.next()
-  return { 'status': 'ok' }
+  return { 'list': actions.list() }
