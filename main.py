@@ -27,5 +27,5 @@ def create_configuration(config: ConfigurationIn):
 @app.post("/action")
 def create_action():
   actions = ActionList()
-  actions.next()
-  return { 'list': actions.list() }
+  count = actions.next()
+  return { 'status': 'ok', 'action_count': count }

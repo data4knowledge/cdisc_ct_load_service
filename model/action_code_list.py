@@ -35,7 +35,7 @@ class ActionCodeList(Action):
     cs = SkosConcept(label = codelist['name'],
       identifier = self.identifier,
       notation = codelist['submissionValue'],
-      #alt_label = synonyms,
+      alt_label = synonyms,
       pref_label = codelist['preferredTerm'],
       definition = codelist['definition']
     )
@@ -49,7 +49,7 @@ class ActionCodeList(Action):
       child = SkosConcept(label = cl['preferredTerm'],
         identifier = cl['conceptId'],
         notation = cl['submissionValue'],
-        #alt_label = synonyms,
+        alt_label = synonyms,
         pref_label = cl['preferredTerm'],
         definition = cl['definition']
       )

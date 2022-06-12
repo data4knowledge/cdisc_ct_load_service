@@ -29,7 +29,8 @@ class ActionList(Action):
     new_actions = action.process()
     self.__store.put(new_actions + self.__actions, STORE_KEY)
     self.__actions = self.__store.get(STORE_KEY)
-
+    return len(self.__actions)
+    
   def list(self):
     return self.__actions
   
