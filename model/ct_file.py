@@ -16,8 +16,10 @@ class CtFile():
 
   def code_list_list(self):
     results = []
-    filename = self.filename()
     for item in self.__file['codelists']:
-      results.append({ 'identifier': item['conceptId'], 'filename': filename })  
+      results.append({ 'identifier': item['conceptId'], 'scheme': self.scheme, 'date': self.date })  
     print("CODE_LIST_LIST [1]:", results)
     return results
+
+  def code_list(self, identifier):
+    return next(item for item in self.__file['codelists'] if item["conceptId"] == identifier )
