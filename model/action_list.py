@@ -3,11 +3,13 @@ from model.configuration import Configuration
 from model.manifest import Manifest
 from model.action_release import ActionRelease
 from model.action_scheme import ActionScheme
+from model.action_code_list import ActionCodeList
+from model.action import Action
 from store.store import Store
 
 STORE_KEY = "list"
 
-class ActionList():
+class ActionList(Action):
   
   def __init__(self):
     self.__store = Store()

@@ -33,5 +33,5 @@ class ActionRelease(Action):
     list = self.__manifest.concept_scheme_list(self.release_date)
     return [ActionScheme(**i).preserve() for i in list]
 
-  def to_preserve(self):
-    return { 'release_date': self.release_date }
+  #def to_preserve(self):
+  #  return { 'release_date': self.release_date }

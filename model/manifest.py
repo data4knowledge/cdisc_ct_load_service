@@ -4,8 +4,8 @@ from drive.drive import Drive
 class Manifest():
 
   def __init__(self):
-    self.__drive = Drive()
-    self.__manifest = self.__drive.read('manifest', 'manifest.yaml')
+    self.__drive = Drive("manifest")
+    self.__manifest = self.__drive.read('manifest.yaml')
   
   def next_release_after(self, this_date):
     dates = {}
