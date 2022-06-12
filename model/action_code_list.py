@@ -28,31 +28,31 @@ class ActionCodeList(Action):
     file = CtFile(self.scheme, self.date)
     file.read()
     codelist = file.code_list(self.identifier)
+    print("ACTIONCODELIST.PROCESS [1]:", codelist)
     synonyms = []
     if 'synonyms' in codelist:
       synonyms = codelist['synonyms']
-    cs = SkosConcept(label = self.identifier,
+    cs = SkosConcept(label = codelist['name'],
       identifier = self.identifier,
       notation = codelist['submissionValue'],
-      atl_label = synonyms,
+      #alt_label = synonyms,
       pref_label = codelist['preferredTerm'],
       definition = codelist['definition']
     )
+    print("ACTIONCODELIST.PROCESS [2]:", vars(cs))
     cs.has_status.add(si)
     cs.identified_by.add(rs)
-    objects = [cs, si, rs, sv]
     for cl in codelist['terms']:
       synonyms = []
       if 'synonyms' in codelist:
         synonyms = codelist['synonyms']
-      child = SkosConcept(label = cl['conceptId'],
+      child = SkosConcept(label = cl['preferredTerm'],
         identifier = cl['conceptId'],
         notation = cl['submissionValue'],
-        atl_label = synonyms,
+        #alt_label = synonyms,
         pref_label = cl['preferredTerm'],
         definition = cl['definition']
       )
       cs.narrower.add(child)
-      objects.append(child)
-    self.__repo.save(*objects)
+    self.__repo.save(cs)  
     return []
