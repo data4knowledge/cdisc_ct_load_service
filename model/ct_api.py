@@ -11,10 +11,13 @@ class CtApi():
     self.__date = date
   
   def read(self):
-    return self.api_get("mdr/ct/packages/%s-%s/codelists" % (self.__package, self.__date))
+    return self.api_get("mdr/ct/packages/%sct-%s/codelists" % (self.__package, self.__date))
 
   def api_get(self, url):
-    api_url = "https://api.library.cdisc.org/api/%s" % (url)
+    print("DRIVE.API_GET [1]: %s" % (url))
+    api_url = "https://api.library.cdisc.org/api/%s?expand=true" % (url)
+    print("DRIVE.API_GET [2]: %s" % (api_url))
     headers =  {"Content-Type":"application/json", "api-key": API_KEY}
     response = requests.get(api_url, headers=headers)
-    return response
+    print("DRIVE.API_GET [3]: %s %s" % (response.status_code, response.json()))
+    return response.json()

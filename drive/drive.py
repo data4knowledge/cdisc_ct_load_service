@@ -17,6 +17,6 @@ class Drive():
     data = yaml.safe_load(content)
     return data
 
-  def upload(self, data):
-    filename = ""
-    return filename
+  def upload(self, filename, data):
+    print("DRIVE.UPOAD [1]: %s, %s" % (filename, data))
+    self.__drive.put(filename, data)

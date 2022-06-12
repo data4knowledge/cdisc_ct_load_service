@@ -8,6 +8,7 @@ from neo4j.semantic_version import SemanticVersion
 from neo4j.scoped_identifier import ScopedIdentifier
 from neo4j.registration_status import RegistrationStatus
 from neo4j.skos_concept_scheme import SkosConceptScheme
+import json
 
 class ActionScheme(Action):
   scheme: str
@@ -46,8 +47,9 @@ class ActionScheme(Action):
     if self.format == "api":
       api = CtApi(self.scheme, self.date)
       data = api.read()
-      Drive(self.scheme).upload(data)
+      Drive(self.scheme).upload(CtFile(self.scheme, self.date).filename(), json.dumps(data))
     file = CtFile(self.scheme, self.date)
+    file.read()
     return file.code_list_list()
 
 
