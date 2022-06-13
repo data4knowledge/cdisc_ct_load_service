@@ -14,11 +14,14 @@ class ActionScheme(Action):
   scheme: str
   date: str
   format: str
+  parent_uri: str
 
   def __init__(self, *args, **kwargs):
+    print("ACTION_SCHEME.__INIT__: %s" % (kwargs))
     self.scheme = kwargs.pop('scheme')
     self.date = kwargs.pop('date')
     self.format = kwargs.pop('format')
+    self.parent_uri = kwargs.pop('parent_uri')
     #self.__store = Store("actions")
     #self.__manifest = Manifest()
     #self.__config = Configuration()

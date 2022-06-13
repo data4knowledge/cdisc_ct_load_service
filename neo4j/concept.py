@@ -4,6 +4,8 @@ from neo4j.registration_status import RegistrationStatus
 from neo4j.extension import Extension
 
 class Concept(Model):
+  uuid = Property()
+  uri = Property()
   label = Property()
   
   identified_by = RelatedTo(ScopedIdentifier, "IDENTIFIED_BY")
