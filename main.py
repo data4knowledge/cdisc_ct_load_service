@@ -6,11 +6,15 @@ from model.system import *
 VERSION = "0.1"
 SYSTEM_NAME = "d4k CT Load Microservice"
 
-app = FastAPI()
+app = FastAPI(
+  title = SYSTEM_NAME,
+  description = "A microservice to load the CDISC CT into a Neo4j database.",
+  version = VERSION
+)
 
 @app.get("/")
 def read_root():
-  return SystemOut(**{ 'version': VERSION, 'system_name': SYSTEM_NAME })
+  return SystemOut(**{ 'system_name': SYSTEM_NAME, 'version': VERSION })
 
 @app.post("/configuration")
 def create_configuration(config: ConfigurationIn):
