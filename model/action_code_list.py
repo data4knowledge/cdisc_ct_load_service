@@ -11,12 +11,15 @@ from neo4j.skos_concept import SkosConcept
 
 class ActionCodeList(Action):
   identifier: str
-  filename: str
+  scheme: str
+  date: str
+  parent_uri: str
 
   def __init__(self, *args, **kwargs):
     self.identifier = kwargs.pop('identifier')
     self.scheme = kwargs.pop('scheme')
     self.date = kwargs.pop('date')
+    self.parent_uri = kwargs.pop('parent_uri')
     self.__db = Neo4jDatabase()
     self.__repo = self.__db.repository()
 

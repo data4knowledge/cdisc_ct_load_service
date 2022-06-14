@@ -22,29 +22,25 @@ class ActionScheme(Action):
     self.date = kwargs.pop('date')
     self.format = kwargs.pop('format')
     self.parent_uri = kwargs.pop('parent_uri')
-    #self.__store = Store("actions")
-    #self.__manifest = Manifest()
-    #self.__config = Configuration()
-    #self.__actions = self.__store.get("list")
     self.__db = Neo4jDatabase()
     self.__repo = self.__db.repository()
-    #super().__init__(*args, **kwargs)
 
   def process(self):
     sv = SemanticVersion(major="1", minor="0", patch="0")
     si = ScopedIdentifier(version = "1", version_label = self.date, identifier = "%s CT" % (self.scheme))
     si.semantic_version.add(sv)
     rs = RegistrationStatus(registration_status = "Released", effective_date = self.date, until_date = "")
-    cs = SkosConceptScheme(label = "CDISC")
+    uuid = str(uuid4())
+    uri = "%scdisc/ct/cs/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], uuid)
+    cs = SkosConceptScheme(label = self.scheme, uuid = uuid, uri = uri)
     cs.has_status.add(si)
     cs.identified_by.add(rs)
     self.__repo.save(cs, si, rs, sv)
     list = self.code_list_list()
+    for i in list:
+      i['parent_uri'] = uri
     return [ActionCodeList(**i).preserve() for i in list]
 
-  #def to_preserve(self):
-  #  return { 'scheme': self.scheme, 'date': self.date, 'format': self.format }
-  
   def code_list_list(self):
     print("CODE_LIST_LIST: %s, %s" % (self.scheme, self.date))
     if self.format == "api":

@@ -21,7 +21,6 @@ class ActionRelease(Action):
     self.__manifest = Manifest()
     self.__db = Neo4jDatabase()
     self.__repo = self.__db.repository()
-    #super().__init__(*args, **kwargs)
     
   def process(self):
     sv = SemanticVersion(major="1", minor="0", patch="0")
@@ -29,7 +28,7 @@ class ActionRelease(Action):
     si.semantic_version.add(sv)
     rs = RegistrationStatus(registration_status = "Released", effective_date = self.release_date, until_date = "")
     uuid = str(uuid4())
-    uri = "%scdisc/ct/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], uuid)
+    uri = "%scdisc/ct/rel/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], uuid)
     rel = Release(label = "Controlled Terminology", uuid = uuid, uri = uri)
     rel.has_status.add(rs)
     rel.identified_by.add(si)
