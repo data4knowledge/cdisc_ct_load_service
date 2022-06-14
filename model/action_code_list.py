@@ -37,12 +37,16 @@ class ActionCodeList(Action):
     synonyms = []
     if 'synonyms' in codelist:
       synonyms = codelist['synonyms']
+    uuid = str(uuid4())
+    uri = "%scdisc/ct/sc/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], uuid)
     cs = SkosConcept(label = codelist['name'],
       identifier = self.identifier,
       notation = codelist['submissionValue'],
       alt_label = synonyms,
       pref_label = codelist['preferredTerm'],
-      definition = codelist['definition']
+      definition = codelist['definition'],
+      uuid = uuid,
+      uri = uri
     )
     print("ACTIONCODELIST.PROCESS [2]:", vars(cs))
     cs.has_status.add(si)
@@ -51,12 +55,16 @@ class ActionCodeList(Action):
       synonyms = []
       if 'synonyms' in codelist:
         synonyms = codelist['synonyms']
+      uuid = str(uuid4())
+      uri = "%scdisc/ct/sc/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], uuid)
       child = SkosConcept(label = cl['preferredTerm'],
         identifier = cl['conceptId'],
         notation = cl['submissionValue'],
         alt_label = synonyms,
         pref_label = cl['preferredTerm'],
-        definition = cl['definition']
+        definition = cl['definition'],
+        uuid = uuid,
+        uri = uri
       )
       cs.narrower.add(child)
     self.__repo.save(cs)  
