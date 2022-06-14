@@ -8,6 +8,7 @@ from neo4j.semantic_version import SemanticVersion
 from neo4j.scoped_identifier import ScopedIdentifier
 from neo4j.registration_status import RegistrationStatus
 from neo4j.skos_concept import SkosConcept
+from neo4j.skos_concept_scheme import SkosConceptScheme
 from uuid import uuid4
 import os
 
@@ -26,6 +27,7 @@ class ActionCodeList(Action):
     self.__repo = self.__db.repository()
 
   def process(self):
+    scs = SkosConceptScheme.match(self.__db.graph()).where(uri=self.parent_uri).first()
     sv = SemanticVersion(major="1", minor="0", patch="0")
     si = ScopedIdentifier(version = "1", version_label = self.date, identifier = "%s" % (self.identifier))
     si.semantic_version.add(sv)
@@ -48,6 +50,7 @@ class ActionCodeList(Action):
       uuid = uuid,
       uri = uri
     )
+    scs.top_level_concept.add(cs)
     print("ACTIONCODELIST.PROCESS [2]:", vars(cs))
     cs.has_status.add(si)
     cs.identified_by.add(rs)
@@ -67,5 +70,5 @@ class ActionCodeList(Action):
         uri = uri
       )
       cs.narrower.add(child)
-    self.__repo.save(cs)  
+    self.__repo.save(cs, scs)  
     return []

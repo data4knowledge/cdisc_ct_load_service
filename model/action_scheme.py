@@ -8,6 +8,7 @@ from neo4j.semantic_version import SemanticVersion
 from neo4j.scoped_identifier import ScopedIdentifier
 from neo4j.registration_status import RegistrationStatus
 from neo4j.skos_concept_scheme import SkosConceptScheme
+from neo4j.release import Release
 from uuid import uuid4
 import json
 import os
@@ -28,6 +29,7 @@ class ActionScheme(Action):
     self.__repo = self.__db.repository()
 
   def process(self):
+    sr = Release.match(self.__db.graph()).where(uri=self.parent_uri).first()
     sv = SemanticVersion(major="1", minor="0", patch="0")
     si = ScopedIdentifier(version = "1", version_label = self.date, identifier = "%s CT" % (self.scheme))
     si.semantic_version.add(sv)
@@ -37,7 +39,8 @@ class ActionScheme(Action):
     cs = SkosConceptScheme(label = self.scheme, uuid = uuid, uri = uri)
     cs.has_status.add(si)
     cs.identified_by.add(rs)
-    self.__repo.save(cs, si, rs, sv)
+    sr.consists_of.add(cs)
+    self.__repo.save(cs, si, rs, sv, sr)
     list = self.code_list_list()
     for i in list:
       i['parent_uri'] = uri
