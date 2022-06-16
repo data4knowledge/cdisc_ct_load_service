@@ -13,12 +13,13 @@ class CtFile():
 
   def read(self):
     self.__file = self.__drive.read(self.filename())
+    #print("CTFILE.READ [1]:", self.__file)
 
   def code_list_list(self):
     results = []
     for item in self.__file['codelists']:
       results.append({ 'identifier': item['conceptId'], 'scheme': self.scheme, 'date': self.date })  
-    print("CODE_LIST_LIST [1]:", results)
+    #print("CODE_LIST_LIST [1]:", results)
     return results
 
   def code_list(self, identifier):

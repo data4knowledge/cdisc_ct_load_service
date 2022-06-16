@@ -2,6 +2,7 @@ from model.action import Action
 from model.configuration import Configuration
 from model.manifest import Manifest
 from model.ct_file import CtFile
+from model.ct_api import CtApi
 from store.store import Store
 from neo4j.neo4j_database import Neo4jDatabase
 from neo4j.semantic_version import SemanticVersion
@@ -32,9 +33,11 @@ class ActionCodeList(Action):
     si = ScopedIdentifier(version = "1", version_label = self.date, identifier = "%s" % (self.identifier))
     si.semantic_version.add(sv)
     rs = RegistrationStatus(registration_status = "Released", effective_date = self.date, until_date = "")
-    file = CtFile(self.scheme, self.date)
-    file.read()
-    codelist = file.code_list(self.identifier)
+    #file = CtFile(self.scheme, self.date)
+    #file.read()
+    #codelist = file.code_list(self.identifier)
+    api = CtApi(self.scheme, self.date)
+    codelist = api.read_code_list(self.identifier)
     print("ACTIONCODELIST.PROCESS [1]:", codelist)
     synonyms = []
     if 'synonyms' in codelist:

@@ -55,7 +55,7 @@ class ActionScheme(Action):
       if not drive.present(filename):
         print("CODE_LIST_LIST [3]: Not present")
         api = CtApi(self.scheme, self.date)
-        data = api.read()
+        data = api.read_code_lists()
         Drive(self.scheme).upload(filename, json.dumps(data))
     file = CtFile(self.scheme, self.date)
     file.read()
