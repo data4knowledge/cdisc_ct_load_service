@@ -47,11 +47,16 @@ class ActionScheme(Action):
     return [ActionCodeList(**i).preserve() for i in list]
 
   def code_list_list(self):
-    print("CODE_LIST_LIST: %s, %s" % (self.scheme, self.date))
+    print("CODE_LIST_LIST [1]: %s, %s" % (self.scheme, self.date))
     if self.format == "api":
-      api = CtApi(self.scheme, self.date)
-      data = api.read()
-      Drive(self.scheme).upload(CtFile(self.scheme, self.date).filename(), json.dumps(data))
+      drive = Drive(self.scheme)
+      filename = CtFile(self.scheme, self.date).filename()
+      print("CODE_LIST_LIST [2]: %s" % (filename))
+      if not drive.present(filename):
+        print("CODE_LIST_LIST [3]: Not present")
+        api = CtApi(self.scheme, self.date)
+        data = api.read()
+        Drive(self.scheme).upload(filename, json.dumps(data))
     file = CtFile(self.scheme, self.date)
     file.read()
     return file.code_list_list()

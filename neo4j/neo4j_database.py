@@ -1,7 +1,7 @@
 from py2neo.ogm import Repository
 import os
 
-DB_NAME = "ct-service"
+DB_NAME = "neo4j"
 
 class Neo4jDatabase():
   
@@ -16,3 +16,9 @@ class Neo4jDatabase():
 
   def graph(self):
     return self.__repo.graph
+
+  def clear(self):
+    query = """
+      CALL apoc.periodic.iterate('MATCH (n) RETURN n', 'DETACH DELETE n', {batchSize:1000})
+    """
+    self.__repo.graph.run(query)
