@@ -18,7 +18,7 @@ class CtFile():
   def code_list_list(self):
     results = []
     for item in self.__file['codelists']:
-      results.append({ 'identifier': item['conceptId'], 'scheme': self.scheme, 'date': self.date })  
+      results.append({ 'identifier': item['conceptId'], 'scheme': self.scheme, 'date': self.date, 'format': "file" })  
     #print("CODE_LIST_LIST [1]:", results)
     return results
 

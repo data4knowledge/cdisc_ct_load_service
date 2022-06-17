@@ -33,4 +33,6 @@ class ActionList(Action):
     
   def list(self):
     return self.__actions
-  
+
+  def more(self):
+    return len(self.__actions) > 0

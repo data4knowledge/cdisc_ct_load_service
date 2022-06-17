@@ -42,6 +42,7 @@ class ActionScheme(Action):
     sr.consists_of.add(cs)
     self.__repo.save(cs, si, rs, sv, sr)
     list = self.code_list_list()
+    print(list)
     for i in list:
       i['parent_uri'] = uri
     return [ActionCodeList(**i).preserve() for i in list]
@@ -49,16 +50,20 @@ class ActionScheme(Action):
   def code_list_list(self):
     print("CODE_LIST_LIST [1]: %s, %s" % (self.scheme, self.date))
     if self.format == "api":
-      drive = Drive(self.scheme)
-      filename = CtFile(self.scheme, self.date).filename()
-      print("CODE_LIST_LIST [2]: %s" % (filename))
-      if not drive.present(filename):
-        print("CODE_LIST_LIST [3]: Not present")
-        api = CtApi(self.scheme, self.date)
-        data = api.read_code_lists()
-        Drive(self.scheme).upload(filename, json.dumps(data))
-    file = CtFile(self.scheme, self.date)
-    file.read()
-    return file.code_list_list()
+      #drive = Drive(self.scheme)
+      #filename = CtFile(self.scheme, self.date).filename()
+      #print("CODE_LIST_LIST [2]: %s" % (filename))
+      #if not drive.present(filename):
+      #  print("CODE_LIST_LIST [3]: Not present")
+      results = []
+      api = CtApi(self.scheme, self.date)
+      for item in api.read_code_lists()['codelists']:
+        results.append({ 'identifier': item['conceptId'], 'scheme': self.scheme, 'date': self.date, 'format': "api" })  
+      return results
+      #  Drive(self.scheme).upload(filename, json.dumps(data))
+    else:
+      file = CtFile(self.scheme, self.date)
+      file.read()
+      return file.code_list_list()
 
 

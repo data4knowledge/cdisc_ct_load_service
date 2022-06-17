@@ -37,6 +37,8 @@ async def list_actions():
 
 @app.post("/actions")
 async def process_action():
+  count = 0
   actions = ActionList()
-  count = actions.next()
+  if actions.more():
+    count = actions.next()
   return { 'status': 'ok', 'action_count': count }

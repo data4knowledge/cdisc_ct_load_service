@@ -24,6 +24,7 @@ class ActionCodeList(Action):
     self.scheme = kwargs.pop('scheme')
     self.date = kwargs.pop('date')
     self.parent_uri = kwargs.pop('parent_uri')
+    self.format = kwargs.pop('format')
     self.__db = Neo4jDatabase()
     self.__repo = self.__db.repository()
 
@@ -33,12 +34,15 @@ class ActionCodeList(Action):
     si = ScopedIdentifier(version = "1", version_label = self.date, identifier = "%s" % (self.identifier))
     si.semantic_version.add(sv)
     rs = RegistrationStatus(registration_status = "Released", effective_date = self.date, until_date = "")
-    #file = CtFile(self.scheme, self.date)
-    #file.read()
-    #codelist = file.code_list(self.identifier)
-    api = CtApi(self.scheme, self.date)
-    codelist = api.read_code_list(self.identifier)
-    print("ACTIONCODELIST.PROCESS [1]:", codelist)
+    if self.format == "api":
+      api = CtApi(self.scheme, self.date)
+      codelist = api.read_code_list(self.identifier)
+      print("ACTIONCODELIST.PROCESS [1a]:", codelist)
+    else:
+      file = CtFile(self.scheme, self.date)
+      file.read()
+      codelist = file.code_list(self.identifier)
+      print("ACTIONCODELIST.PROCESS [1f]:", codelist)
     synonyms = []
     if 'synonyms' in codelist:
       synonyms = codelist['synonyms']
