@@ -30,19 +30,25 @@ class ActionCodeList(Action):
 
   def process(self):
     scs = SkosConceptScheme.match(self.__db.graph()).where(uri=self.parent_uri).first()
-    sv = SemanticVersion(major="1", minor="0", patch="0")
-    si = ScopedIdentifier(version = "1", version_label = self.date, identifier = "%s" % (self.identifier))
+    previous = SkosConcept.latest(self.identifier)
+    if previous == None:
+      version = "1"
+    else:
+      version = "%s" % (previous.version() + 1)
+    print("ACTIONCODELIST.PROCESS [1]: next version = %s" % (version))
+    sv = SemanticVersion(major=version, minor="0", patch="0")
+    si = ScopedIdentifier(version = version, version_label = self.date, identifier = "%s" % (self.identifier))
     si.semantic_version.add(sv)
     rs = RegistrationStatus(registration_status = "Released", effective_date = self.date, until_date = "")
     if self.format == "api":
       api = CtApi(self.scheme, self.date)
       codelist = api.read_code_list(self.identifier)
-      print("ACTIONCODELIST.PROCESS [1a]:", codelist)
+      print("ACTIONCODELIST.PROCESS [1a]:", codelist['conceptId'])
     else:
       file = CtFile(self.scheme, self.date)
       file.read()
       codelist = file.code_list(self.identifier)
-      print("ACTIONCODELIST.PROCESS [1f]:", codelist)
+      print("ACTIONCODELIST.PROCESS [1b]:", codelist['conceptId'])
     synonyms = []
     if 'synonyms' in codelist:
       synonyms = codelist['synonyms']
@@ -57,10 +63,12 @@ class ActionCodeList(Action):
       uuid = uuid,
       uri = uri
     )
+    if not previous == None:
+      cs.previous.add(previous)
     scs.top_level_concept.add(cs)
-    print("ACTIONCODELIST.PROCESS [2]:", vars(cs))
-    cs.has_status.add(si)
-    cs.identified_by.add(rs)
+    #print("ACTIONCODELIST.PROCESS [2]")
+    cs.identified_by.add(si)
+    cs.has_status.add(rs)
     for cl in codelist['terms']:
       synonyms = []
       if 'synonyms' in codelist:
@@ -78,5 +86,5 @@ class ActionCodeList(Action):
       )
       cs.narrower.add(child)
     self.__repo.save(cs, scs)  
-    print("ACTIONCODELIST.PROCESS [3]:")
+    #print("ACTIONCODELIST.PROCESS [3]:")
     return []

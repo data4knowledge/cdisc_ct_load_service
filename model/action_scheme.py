@@ -29,16 +29,25 @@ class ActionScheme(Action):
     self.__repo = self.__db.repository()
 
   def process(self):
+    identifier = "%s CT" % (self.scheme.upper())
     sr = Release.match(self.__db.graph()).where(uri=self.parent_uri).first()
-    sv = SemanticVersion(major="1", minor="0", patch="0")
-    si = ScopedIdentifier(version = "1", version_label = self.date, identifier = "%s CT" % (self.scheme))
+    previous = SkosConceptScheme.latest(identifier)
+    if previous == None:
+      version = "1"
+    else:
+      version = "%s" % (previous.version() + 1)
+    print("ACTIONSCHEME.PROCESS [1]: next version = %s" % (version))
+    sv = SemanticVersion(major = version, minor="0", patch="0")
+    si = ScopedIdentifier(version = version, version_label = self.date, identifier = identifier)
     si.semantic_version.add(sv)
     rs = RegistrationStatus(registration_status = "Released", effective_date = self.date, until_date = "")
     uuid = str(uuid4())
-    uri = "%scdisc/ct/cs/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], uuid)
+    uri = "%scdisc/ct/cs/%s/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], self.date, self.scheme)
     cs = SkosConceptScheme(label = self.scheme, uuid = uuid, uri = uri)
-    cs.has_status.add(si)
-    cs.identified_by.add(rs)
+    if not previous == None:
+      cs.previous.add(previous)
+    cs.identified_by.add(si)
+    cs.has_status.add(rs)
     sr.consists_of.add(cs)
     self.__repo.save(cs, si, rs, sv, sr)
     list = self.code_list_list()

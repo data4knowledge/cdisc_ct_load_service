@@ -50,10 +50,19 @@ def action():
   else:
     print(f'Failed, code: {x.status_code}, info: {x.content}')
 
+def str2bool(v):
+  return v.lower() in ("yes", "true", "t", "1")
+
 if __name__ == '__main__':
   target = None
-  if len(sys.argv) > 1:
-    target = int(sys.argv[1])
-  print("MAIN [1]: Target set to %s" % [target])
-  config()
+  run_config = False
+  kwargs = dict(arg.split('=') for arg in sys.argv[1:])
+  if "target" in kwargs:
+    target = int(kwargs['target'])
+  if "config" in kwargs:
+    run_config = str2bool(kwargs['config'])
+  print("MAIN [1]: Target=%s, Run Configuration=%s" % (target, run_config))
+  if run_config:
+    print("MAIN [2]: Configuring")
+    config()
   action_until(target)
