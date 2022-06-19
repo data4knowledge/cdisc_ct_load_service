@@ -23,13 +23,22 @@ class ActionRelease(Action):
     self.__repo = self.__db.repository()
     
   def process(self):
-    sv = SemanticVersion(major="1", minor="0", patch="0")
-    si = ScopedIdentifier(version = "1", version_label = self.release_date, identifier = "CT")
+    previous = Release.latest("CT")
+    if previous == None:
+      print("ACTIONRELEASE.PROCESS [1]: first release")
+      version = "1"
+    else:
+      print("ACTIONRELEASE.PROCESS [1]: %s" % (previous.label))
+      version = "%s" % (previous.version() + 1)
+    sv = SemanticVersion(major=version, minor="0", patch="0")
+    si = ScopedIdentifier(version = version, version_label = self.release_date, identifier = "CT")
     si.semantic_version.add(sv)
     rs = RegistrationStatus(registration_status = "Released", effective_date = self.release_date, until_date = "")
     uuid = str(uuid4())
-    uri = "%scdisc/ct/rel/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], uuid)
+    uri = "%scdisc/ct/rel/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], self.release_date)
     rel = Release(label = "Controlled Terminology", uuid = uuid, uri = uri)
+    if not previous == None:
+      rel.previous.add(previous)
     rel.has_status.add(rs)
     rel.identified_by.add(si)
     self.__repo.save(rel, rs, si, sv)
