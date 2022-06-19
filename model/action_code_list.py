@@ -53,7 +53,7 @@ class ActionCodeList(Action):
     if 'synonyms' in codelist:
       synonyms = codelist['synonyms']
     uuid = str(uuid4())
-    uri = "%scdisc/ct/sc/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], uuid)
+    uri = "%scdisc/ct/sc/%s/%s/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], self.date, self.scheme, self.identifier)
     cs = SkosConcept(label = codelist['name'],
       identifier = self.identifier,
       notation = codelist['submissionValue'],
@@ -74,7 +74,7 @@ class ActionCodeList(Action):
       if 'synonyms' in codelist:
         synonyms = codelist['synonyms']
       uuid = str(uuid4())
-      uri = "%scdisc/ct/sc/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], uuid)
+      uri = "%scdisc/ct/sc/%s/%s/%s/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], self.date, self.scheme, self.identifier, cl['conceptId'])
       child = SkosConcept(label = cl['preferredTerm'],
         identifier = cl['conceptId'],
         notation = cl['submissionValue'],
