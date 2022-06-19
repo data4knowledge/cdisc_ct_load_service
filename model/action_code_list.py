@@ -12,6 +12,7 @@ from neo4j.skos_concept import SkosConcept
 from neo4j.skos_concept_scheme import SkosConceptScheme
 from uuid import uuid4
 import os
+from deepdiff import DeepDiff
 
 class ActionCodeList(Action):
   identifier: str
@@ -33,32 +34,66 @@ class ActionCodeList(Action):
     previous = SkosConcept.latest(self.identifier)
     if previous == None:
       version = "1"
+      previous_dict = None
     else:
       version = "%s" % (previous.version() + 1)
-    print("ACTIONCODELIST.PROCESS [1]: next version = %s" % (version))
-    sv = SemanticVersion(major=version, minor="0", patch="0")
-    si = ScopedIdentifier(version = version, version_label = self.date, identifier = "%s" % (self.identifier))
-    si.semantic_version.add(sv)
-    rs = RegistrationStatus(registration_status = "Released", effective_date = self.date, until_date = "")
+      previous_dict = previous.dict()
+      previous_dict.pop('uuid')
+      previous_dict.pop('uri')
+      previous_dict['terms'] = []
+      for item in previous.narrower:
+        item_dict = item.dict()
+        item_dict.pop('uuid')
+        item_dict.pop('uri')
+        previous_dict['terms'].append(item_dict)
+
+    print("ACTIONCODELIST.PROCESS [2]: next version = %s" % (version))
+    print("ACTIONCODELIST.PROCESS [3]: %s" % (previous_dict))    
+
     if self.format == "api":
       api = CtApi(self.scheme, self.date)
       codelist = api.read_code_list(self.identifier)
-      print("ACTIONCODELIST.PROCESS [1a]:", codelist['conceptId'])
+      print("ACTIONCODELIST.PROCESS [4a]:", codelist['conceptId'])
     else:
       file = CtFile(self.scheme, self.date)
       file.read()
       codelist = file.code_list(self.identifier)
-      print("ACTIONCODELIST.PROCESS [1b]:", codelist['conceptId'])
-    synonyms = []
+      print("ACTIONCODELIST.PROCESS [4b]:", codelist['conceptId'])
+
+    codelist.pop('extensible')
+    codelist.pop('conceptId')
+    codelist['identifier'] = self.identifier
+    codelist['label'] = codelist.pop('name')
+    codelist['notation'] = codelist.pop('submissionValue')
+    codelist['pref_label'] = codelist.pop('preferredTerm')
     if 'synonyms' in codelist:
-      synonyms = codelist['synonyms']
+      codelist['alt_label'] = codelist.pop('synonyms')
+    else:
+      codelist['alt_label'] = []
+    for term in codelist['terms']:
+      term['identifier'] = term.pop('conceptId')
+      term['label'] = term['preferredTerm']
+      term['notation'] = term.pop('submissionValue')
+      term['pref_label'] = term.pop('preferredTerm')
+      if 'synonyms' in term:
+        term['alt_label'] = term.pop('synonyms')
+      else:
+        term['alt_label'] = []
+    print("ACTIONCODELIST.PROCESS [5a]: %s" % (codelist))
+    print("ACTIONCODELIST.PROCESS [5b]: %s" % (DeepDiff(previous_dict, codelist)))
+
+    sv = SemanticVersion(major=version, minor="0", patch="0")
+    si = ScopedIdentifier(version = version, version_label = self.date, identifier = "%s" % (self.identifier))
+    si.semantic_version.add(sv)
+    rs = RegistrationStatus(registration_status = "Released", effective_date = self.date, until_date = "")
+
     uuid = str(uuid4())
     uri = "%scdisc/ct/sc/%s/%s/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], self.date, self.scheme, self.identifier)
-    cs = SkosConcept(label = codelist['name'],
-      identifier = self.identifier,
-      notation = codelist['submissionValue'],
-      alt_label = synonyms,
-      pref_label = codelist['preferredTerm'],
+    cs = SkosConcept(label = codelist['label'],
+      identifier = codelist['identifier'],
+      notation = codelist['notation'],
+      alt_label = codelist['alt_label'],
+      pref_label = codelist['pref_label'],
       definition = codelist['definition'],
       uuid = uuid,
       uri = uri
@@ -70,21 +105,18 @@ class ActionCodeList(Action):
     cs.identified_by.add(si)
     cs.has_status.add(rs)
     for cl in codelist['terms']:
-      synonyms = []
-      if 'synonyms' in codelist:
-        synonyms = codelist['synonyms']
       uuid = str(uuid4())
-      uri = "%scdisc/ct/sc/%s/%s/%s/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], self.date, self.scheme, self.identifier, cl['conceptId'])
-      child = SkosConcept(label = cl['preferredTerm'],
-        identifier = cl['conceptId'],
-        notation = cl['submissionValue'],
-        alt_label = synonyms,
-        pref_label = cl['preferredTerm'],
+      uri = "%scdisc/ct/sc/%s/%s/%s/%s" % (os.environ["CDISC_CT_LOAD_SERVICE_BASE_URI"], self.date, self.scheme, self.identifier, cl['identifier'])
+      child = SkosConcept(label = cl['label'],
+        identifier = cl['identifier'],
+        notation = cl['notation'],
+        alt_label = cl['alt_label'],
+        pref_label = cl['pref_label'],
         definition = cl['definition'],
         uuid = uuid,
         uri = uri
       )
       cs.narrower.add(child)
     self.__repo.save(cs, scs)  
-    #print("ACTIONCODELIST.PROCESS [3]:")
+    #print("ACTIONCODELIST.PROCESS [5]:")
     return []

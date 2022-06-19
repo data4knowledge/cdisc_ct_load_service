@@ -30,3 +30,7 @@ class Concept(Model):
     if len(results) == 0:
       return None
     return cls.wrap(results[0]['a'])
+
+  def dict(self):
+    #print("Node: ", dict(self.__ogm__.node))
+    return dict(self.__ogm__.node)
