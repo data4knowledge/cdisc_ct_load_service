@@ -39,6 +39,7 @@ def action_until(target=None):
         execute = False
     else:
       print(f'Failed, code: {response.status_code}, info: {response.content}')
+      execute = False
     time.sleep(0.1)
 
 def action():
