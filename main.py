@@ -32,8 +32,10 @@ async def create_configuration(config: ConfigurationIn):
 
 @app.get("/actions")
 async def list_actions():
-  actions = ActionList()
-  return { 'status': 'ok', 'actions': actions }
+  print("Actions")
+  action = ActionList().first()
+  print("Actions", action)
+  return { 'status': 'ok', 'actions': action }
 
 @app.post("/actions")
 async def process_action():

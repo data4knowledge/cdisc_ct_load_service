@@ -42,7 +42,7 @@ def action_until(target=None):
       execute = False
     time.sleep(0.1)
 
-def action():
+def actions():
   print(f'Sending ...')
   url = "%sactions" % (use_url)
   x = requests.get(url, headers=headers)
@@ -57,13 +57,20 @@ def str2bool(v):
 if __name__ == '__main__':
   target = None
   run_config = False
+  run_actions = False
   kwargs = dict(arg.split('=') for arg in sys.argv[1:])
   if "target" in kwargs:
     target = int(kwargs['target'])
   if "config" in kwargs:
     run_config = str2bool(kwargs['config'])
-  print("MAIN [1]: Target=%s, Run Configuration=%s" % (target, run_config))
+  if "actions" in kwargs:
+    run_actions = str2bool(kwargs['actions'])
+    run_config = False
+  print("MAIN [1]: Target=%s, Run Configuration=%s, Actions=%s" % (target, run_config, run_actions))
   if run_config:
     print("MAIN [2]: Configuring")
     config()
-  action_until(target)
+  if run_actions:
+    actions()
+  else:
+    action_until(target)
