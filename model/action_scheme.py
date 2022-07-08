@@ -67,6 +67,11 @@ class ActionScheme(Action):
       results = []
       api = CtApi(self.scheme, self.date)
       for item in api.read_code_lists()['codelists']:
+
+        # FOR TEST!!!
+        #if item['conceptId'] != "C66741":
+        #  continue
+
         results.append({ 'identifier': item['conceptId'], 'scheme': self.scheme, 'date': self.date, 'format': "api" })  
       return results
       #  Drive(self.scheme).upload(filename, json.dumps(data))

@@ -32,15 +32,15 @@ async def create_configuration(config: ConfigurationIn):
 
 @app.get("/actions")
 async def list_actions():
-  print("Actions")
   action = ActionList().first()
-  print("Actions", action)
-  return { 'status': 'ok', 'actions': action }
+  return { 'status': 'ok', 'next': action['data'] }
 
 @app.post("/actions")
 async def process_action():
   count = 0
+  action = {}
   actions = ActionList()
   if actions.more():
     count = actions.next()
-  return { 'status': 'ok', 'action_count': count }
+    action = ActionList().first()
+  return { 'status': 'ok', 'action_count': count, 'next': action['data'] }
