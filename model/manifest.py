@@ -38,7 +38,13 @@ class Manifest():
     else:
       format = "file"
     for k, v in self.__manifest[release_date]["items"].items():
-      results.append({ 'scheme': k, 'date': v, 'format': format })  
+
+      # FOR TEST!!!
+      #if k != "sdtm":
+      #  continue
+
+      date, format_for_date = self._format_and_date(release_date, k)
+      results.append({ 'scheme': k, 'date': date, 'format': format_for_date })  
     print("CONCEPT_SCHEME_LIST [3]:", results)
     return results
 
@@ -47,3 +53,17 @@ class Manifest():
 
   def _to_iso8601_str(self, date):
     return date.strftime("%Y-%m-%d")
+
+  def _format_and_date(self, release_date, scheme):
+    date = self.__manifest[release_date]["items"][scheme]
+    if "api" in self.__manifest[date]["format"]:
+      format = "api"
+    else:
+      format = "file"
+    return date, format
+
+  def _api_or_file(self, date):
+    if "api" in self.__manifest[date]["format"]:
+      return "api"
+    else:
+      return "file"
