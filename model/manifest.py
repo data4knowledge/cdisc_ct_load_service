@@ -36,11 +36,11 @@ class Manifest():
     for k, v in self.__manifest[release_date]["items"].items():
 
       # FOR TEST!!!
-      #if k != "sdtm":
-      #  continue
+#      if k != "adam":
+#        continue
 
       date, format_for_date = self._format_and_date(release_date, k)
-      results.append({ 'scheme': k, 'date': date, 'format': format_for_date })  
+      results.append({ 'scheme': k, 'release_date': release_date, 'date': date, 'format': format_for_date })  
     print("CONCEPT_SCHEME_LIST [3]:", results)
     return results
 

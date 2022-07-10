@@ -23,6 +23,7 @@ class ActionScheme(Action):
     print("ACTION_SCHEME.__INIT__: %s" % (kwargs))
     self.scheme = kwargs.pop('scheme')
     self.date = kwargs.pop('date')
+    self.release_date = kwargs.pop('release_date')
     self.format = kwargs.pop('format')
     self.parent_uri = kwargs.pop('parent_uri')
     self.__db = Neo4jDatabase()
@@ -49,12 +50,19 @@ class ActionScheme(Action):
     cs.identified_by.add(si)
     cs.has_status.add(rs)
     sr.consists_of.add(cs)
-    self.__repo.save(cs, si, rs, sv, sr)
-    list = self.code_list_list()
-    print(list)
-    for i in list:
-      i['parent_uri'] = uri
-    return [ActionCodeList(**i).preserve() for i in list]
+    if self.release_date != self.date and previous != None:
+      print("ACTIONSCHEME.PROCESS [2]:")
+      for item in previous.top_level_concept:
+        cs.top_level_concept.add(item)
+      self.__repo.save(cs, si, rs, sv, sr)
+      return []
+    else:
+      self.__repo.save(cs, si, rs, sv, sr)
+      list = self.code_list_list()
+      print("ACTIONSCHEME.PROCESS [3]: %s" % (list))
+      for i in list:
+        i['parent_uri'] = uri
+      return [ActionCodeList(**i).preserve() for i in list]
 
   def code_list_list(self):
     print("CODE_LIST_LIST [1]: %s, %s" % (self.scheme, self.date))
