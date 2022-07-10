@@ -2,6 +2,7 @@ import sys
 import json
 import time
 import requests
+from datetime import datetime
 
 local = 'http://localhost:8000/'
 remote = 'https://cq8mqy.deta.dev/'
@@ -34,11 +35,12 @@ def config():
   else:
     print(f'Failed, code: {x.status_code}, info: {x.content}')
 
-def action_until(target=None):
+def action_until(until):
   errors = 0
   highest_errors = 0
   url = "%sactions" % (use_url)
   execute = True
+  until_dt = datetime.strptime(until, '%Y-%m-%d')
   while execute:
     print("Sending [%s, %s]... " % (errors, highest_errors))
     response = requests.post(url, headers=headers)
@@ -46,7 +48,14 @@ def action_until(target=None):
       errors = 0
       data = response.json()
       print(f'Success, data: {data}')
-      if not target == None and data['action_count'] == target:
+      if "release_date" in data['next']:
+        current_dt = datetime.strptime(data['next']['release_date'], '%Y-%m-%d')
+      elif "date" in data['next']:
+        current_dt = datetime.strptime(data['next']['date'], '%Y-%m-%d')
+      else:
+        current_dt = datetime.strptime("2000-01-01", '%Y-%m-%d')
+      print(f'Check {current_dt} versus until {until_dt}')
+      if current_dt >= until_dt:
         execute = False
       else:
         time.sleep(0.1)
@@ -61,35 +70,22 @@ def action_until(target=None):
           highest_errors = errors
         time.sleep(1.0) # Long delay
 
-def actions():
-  print(f'Sending ...')
-  url = "%sactions" % (use_url)
-  x = requests.get(url, headers=headers)
-  if x.status_code == 200:
-    print(f'Success, data: {x.json()}')
-  else:
-    print(f'Failed, code: {x.status_code}, info: {x.content}')
-
 def str2bool(v):
   return v.lower() in ("yes", "true", "t", "1")
 
 if __name__ == '__main__':
-  target = None
   run_config = False
-  run_actions = False
+  until_date = "2023-01-01"
   kwargs = dict(arg.split('=') for arg in sys.argv[1:])
-  if "target" in kwargs:
-    target = int(kwargs['target'])
   if "config" in kwargs:
     run_config = str2bool(kwargs['config'])
-  if "actions" in kwargs:
-    run_actions = str2bool(kwargs['actions'])
+  if "until" in kwargs:
+    until_date = (kwargs['until'])
     run_config = False
-  print("MAIN [1]: Target=%s, Run Configuration=%s, Actions=%s" % (target, run_config, run_actions))
+  print("MAIN [1]: Until=%s, Run Configuration=%s" % (until_date, run_config))
   if run_config:
     print("MAIN [2]: Configuring")
     config()
-  if run_actions:
-    actions()
   else:
-    action_until(target)
+    print("MAIN [3]: Running")
+    action_until(until_date)
