@@ -33,10 +33,6 @@ class Manifest():
     print("CONCEPT_SCHEME_LIST [1]:", release_date)
     print("CONCEPT_SCHEME_LIST [2]:", self.__manifest[release_date])
     results = []
-    if "api" in self.__manifest[release_date]["format"]:
-      format = "api"
-    else:
-      format = "file"
     for k, v in self.__manifest[release_date]["items"].items():
 
       # FOR TEST!!!
@@ -56,10 +52,7 @@ class Manifest():
 
   def _format_and_date(self, release_date, scheme):
     date = self.__manifest[release_date]["items"][scheme]
-    if "api" in self.__manifest[date]["format"]:
-      format = "api"
-    else:
-      format = "file"
+    format = self._api_or_file(date)
     return date, format
 
   def _api_or_file(self, date):
