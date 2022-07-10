@@ -25,8 +25,8 @@ def root():
     print(f'Failed, code: {x.status_code}, info: {x.content}')
     first()
 
-def config():
-  the_data = { "start_date": "2005-01-01" }
+def config(start_date):
+  the_data = { "start_date": start_date }
   print(f'Sending ...')
   url = "%sconfigurations" % (use_url)
   x = requests.post(url, data=json.dumps(the_data), headers=headers)
@@ -75,17 +75,19 @@ def str2bool(v):
 
 if __name__ == '__main__':
   run_config = False
+  start_date = "2000-01-01"
   until_date = "2023-01-01"
   kwargs = dict(arg.split('=') for arg in sys.argv[1:])
   if "config" in kwargs:
     run_config = str2bool(kwargs['config'])
   if "until" in kwargs:
     until_date = (kwargs['until'])
-    run_config = False
-  print("MAIN [1]: Until=%s, Run Configuration=%s" % (until_date, run_config))
+  if "start" in kwargs:
+    start_date = (kwargs['start'])
+  print("MAIN [1]: Start=%s, Until=%s, Run Configuration=%s" % (start_date, until_date, run_config))
   if run_config:
     print("MAIN [2]: Configuring")
-    config()
+    config(start_date)
   else:
     print("MAIN [3]: Running")
     action_until(until_date)
