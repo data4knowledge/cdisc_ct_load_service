@@ -65,7 +65,8 @@ class ActionCodeList(Action):
       codelist = file.code_list(self.identifier)
       print("ACTIONCODELIST.PROCESS [4b]:", codelist['conceptId'])
 
-    codelist.pop('extensible')
+    if 'extensible' in codelist:
+      codelist.pop('extensible')
     codelist.pop('conceptId')
     codelist['identifier'] = self.identifier
     codelist['label'] = codelist.pop('name')
