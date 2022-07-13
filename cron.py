@@ -8,6 +8,7 @@ local = 'http://localhost:8000/'
 remote = 'https://cq8mqy.deta.dev/'
 use_url = local
 headers =  {"Content-Type":"application/json"}
+started_at = datetime.now()
 
 def first():
   x = requests.get("%sactions" % (use_url), headers=headers)
@@ -55,6 +56,9 @@ def action_until(until):
       else:
         current_dt = datetime.strptime("2000-01-01", '%Y-%m-%d')
       print(f'Check {current_dt} versus until {until_dt}')
+      duration = datetime.now() - started_at
+      duration_in_secs = duration.total_seconds()  
+      print(f'Running for {duration_in_secs:.0f} secs [{duration_in_secs/3600.0:.2f} hrs].')
       if current_dt >= until_dt:
         execute = False
       else:
@@ -63,7 +67,9 @@ def action_until(until):
       print(f'Failed, code: {response.status_code}, info: {response.content}')
       first()
       if errors > 3:
-        execute = False
+        print('***** WARNING *****')
+        time.sleep(60.0) # Very long delay
+        errors = 1
       else:
         errors += 1
         if errors > highest_errors:

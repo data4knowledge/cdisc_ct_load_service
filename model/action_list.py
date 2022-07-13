@@ -35,7 +35,11 @@ class ActionList(Action):
     return self.__actions
 
   def first(self):
-    return self.__actions[0]
+    actions = self.__actions
+    if len(actions) == 0:
+      return {}
+    else:
+      return actions[0]['data']
     
   def more(self):
     return len(self.__actions) > 0

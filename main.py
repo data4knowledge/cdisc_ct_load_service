@@ -33,7 +33,7 @@ async def create_configuration(config: ConfigurationIn):
 @app.get("/actions")
 async def list_actions():
   action = ActionList().first()
-  return { 'status': 'ok', 'next': action['data'] }
+  return { 'status': 'ok', 'next': action }
 
 @app.post("/actions")
 async def process_action():
@@ -43,4 +43,4 @@ async def process_action():
   if actions.more():
     count = actions.next()
     action = ActionList().first()
-  return { 'status': 'ok', 'action_count': count, 'next': action['data'] }
+  return { 'status': 'ok', 'action_count': count, 'next': action }
