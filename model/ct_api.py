@@ -11,7 +11,7 @@ class CtApi():
     self.__date = date
   
   def read_code_lists(self):
-    return self.api_get("mdr/ct/packages/%sct-%s/codelists?expand=true" % (self.__package, self.__date))
+    return self.api_get("mdr/ct/packages/%sct-%s/codelists" % (self.__package, self.__date))
 
   def read_code_list(self, identifier):
     return self.api_get("mdr/ct/packages/%sct-%s/codelists/%s" % (self.__package, self.__date, identifier))

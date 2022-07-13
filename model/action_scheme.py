@@ -74,13 +74,13 @@ class ActionScheme(Action):
       #  print("CODE_LIST_LIST [3]: Not present")
       results = []
       api = CtApi(self.scheme, self.date)
-      for item in api.read_code_lists()['codelists']:
+      for item in api.read_code_lists()['_links']['codelists']:
 
         # FOR TEST!!!
         #if item['conceptId'] != "C66741":
         #  continue
-
-        results.append({ 'identifier': item['conceptId'], 'scheme': self.scheme, 'date': self.date, 'format': "api" })  
+        identifier = item['href'].split("/")[-1]
+        results.append({ 'identifier': identifier, 'scheme': self.scheme, 'date': self.date, 'format': "api" })  
       return results
       #  Drive(self.scheme).upload(filename, json.dumps(data))
     else:
