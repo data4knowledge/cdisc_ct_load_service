@@ -39,11 +39,12 @@ def config(start_date):
 def action_until(until):
   errors = 0
   highest_errors = 0
+  warnings = 0
   url = "%sactions" % (use_url)
   execute = True
   until_dt = datetime.strptime(until, '%Y-%m-%d')
   while execute:
-    print("Sending [%s, %s]... " % (errors, highest_errors))
+    print("Sending [%s, %s, %s]... " % (errors, highest_errors, warnings))
     response = requests.post(url, headers=headers)
     if response.status_code == 200:
       errors = 0
@@ -69,7 +70,8 @@ def action_until(until):
       if errors > 3:
         print('***** WARNING *****')
         time.sleep(60.0) # Very long delay
-        errors = 1
+        errors = 0
+        warnings += 1
       else:
         errors += 1
         if errors > highest_errors:
