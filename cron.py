@@ -43,7 +43,9 @@ def action_until(until):
   url = "%sactions" % (use_url)
   execute = True
   until_dt = datetime.strptime(until, '%Y-%m-%d')
+  previous_dt = datetime.now()
   while execute:
+    print("")
     print("Sending [%s, %s, %s]... " % (errors, highest_errors, warnings))
     response = requests.post(url, headers=headers)
     if response.status_code == 200:
@@ -56,14 +58,18 @@ def action_until(until):
         current_dt = datetime.strptime(data['next']['date'], '%Y-%m-%d')
       else:
         current_dt = datetime.strptime("2000-01-01", '%Y-%m-%d')
-      print(f'Check {current_dt} versus until {until_dt}')
-      duration = datetime.now() - started_at
-      duration_in_secs = duration.total_seconds()  
-      print(f'Running for {duration_in_secs:.0f} secs [{duration_in_secs/3600.0:.2f} hrs].')
+      #print(f'Check {current_dt} versus until {until_dt}')
+      now_dt = datetime.now()
+      total_duration = now_dt - started_at
+      last_duration = now_dt - previous_dt
+      total_duration_in_secs = total_duration.total_seconds()  
+      last_duration_in_secs = last_duration.total_seconds()  
+      print(f'Running for {total_duration_in_secs:.0f} secs [{total_duration_in_secs/3600.0:.2f} hrs]. Last step {last_duration_in_secs:.0f} secs')
       if current_dt >= until_dt:
         execute = False
       else:
-        time.sleep(0.1)
+        previous_dt = now_dt
+        #time.sleep(0.1)
     else:
       print(f'Failed, code: {response.status_code}, info: {response.content}')
       first()

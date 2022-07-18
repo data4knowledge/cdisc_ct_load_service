@@ -53,7 +53,7 @@ class ActionCodeList(Action):
 
     print("ACTIONCODELIST.PROCESS [2]: next version = %s" % (version))
     #print("ACTIONCODELIST.PROCESS [3a]: %s" % (previous_dict))    
-    print("ACTIONCODELIST.PROCESS [3b]: %s" % (previous_items))    
+    #print("ACTIONCODELIST.PROCESS [3b]: %s" % (previous_items))    
 
     if self.format == "api":
       api = CtApi(self.scheme, self.date)
@@ -66,7 +66,7 @@ class ActionCodeList(Action):
       print("ACTIONCODELIST.PROCESS [4b]:", codelist['conceptId'])
 
     if 'extensible' in codelist:
-      codelist.pop('extensible')
+      codelist['extensible'] = codelist.pop('extensible')
     codelist.pop('conceptId')
     codelist['identifier'] = self.identifier
     codelist['label'] = codelist.pop('name')
@@ -85,8 +85,8 @@ class ActionCodeList(Action):
         term['alt_label'] = term.pop('synonyms')
       else:
         term['alt_label'] = []
-    print("ACTIONCODELIST.PROCESS [5a]: %s" % (codelist))
-    print("ACTIONCODELIST.PROCESS [5b]: %s" % (DeepDiff(previous_dict, codelist, ignore_order=True)))
+    #print("ACTIONCODELIST.PROCESS [5a]: %s" % (codelist))
+    #print("ACTIONCODELIST.PROCESS [5b]: %s" % (DeepDiff(previous_dict, codelist, ignore_order=True)))
     if (previous_dict == None) or (not previous_dict == None and DeepDiff(previous_dict, codelist, ignore_order=True)):
       sv = SemanticVersion(major=version, minor="0", patch="0")
       si = ScopedIdentifier(version = version, version_label = self.date, identifier = "%s" % (self.identifier))
@@ -101,6 +101,7 @@ class ActionCodeList(Action):
         alt_label = codelist['alt_label'],
         pref_label = codelist['pref_label'],
         definition = codelist['definition'],
+        extensible = codelist['extensible'],
         uuid = uuid,
         uri = uri
       )
@@ -118,14 +119,14 @@ class ActionCodeList(Action):
           previous_term = None
           the_dict = None
         if previous_term != None:
-          print("ACTIONCODELIST.PROCESS [6b]: ", the_dict)
-          print("ACTIONCODELIST.PROCESS [6b]: ", cl)
+          #print("ACTIONCODELIST.PROCESS [6b]: ", the_dict)
+          #print("ACTIONCODELIST.PROCESS [6b]: ", cl)
           differences = DeepDiff(the_dict, cl, ignore_order=True)
           diff = differences != {}
           print("ACTIONCODELIST.PROCESS [6c]: ", diff)
-          print("ACTIONCODELIST.PROCESS [6d]: ", DeepDiff(the_dict, cl, ignore_order=True))
+          #print("ACTIONCODELIST.PROCESS [6d]: ", DeepDiff(the_dict, cl, ignore_order=True))
         else:
-          print("ACTIONCODELIST.PROCESS [6e]: ")
+          #print("ACTIONCODELIST.PROCESS [6e]: ")
           diff = True
         if diff:  
           uuid = str(uuid4())
@@ -136,6 +137,7 @@ class ActionCodeList(Action):
             alt_label = cl['alt_label'],
             pref_label = cl['pref_label'],
             definition = cl['definition'],
+            extensible = False,
             uuid = uuid,
             uri = uri
           )

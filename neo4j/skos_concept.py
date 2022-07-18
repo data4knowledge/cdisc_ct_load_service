@@ -7,6 +7,7 @@ class SkosConcept(Concept):
   alt_label = Property()
   pref_label = Property()
   definition = Property()
-
+  extensible = Property()
+  
   narrower = RelatedTo('SkosConcept', "NARROWER")
  

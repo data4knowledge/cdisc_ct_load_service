@@ -25,7 +25,7 @@ class Concept(Model):
     query = """
       MATCH (a)-[:IDENTIFIED_BY]->(si) WHERE si.identifier='%s' AND NOT ()-[:PREVIOUS]->(a) RETURN a
     """ % (identifier)
-    print("CONCEPT.LATEST [1]: %s" % (query))
+    #print("CONCEPT.LATEST [1]: %s" % (query))
     results = db.graph().run(query).data()
     if len(results) == 0:
       return None

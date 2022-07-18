@@ -22,5 +22,5 @@ class CtApi():
     print("DRIVE.API_GET [2]: %s" % (api_url))
     headers =  {"Content-Type":"application/json", "api-key": API_KEY}
     response = requests.get(api_url, headers=headers)
-    print("DRIVE.API_GET [3]: %s %s" % (response.status_code, response.json()))
+    #print("DRIVE.API_GET [3]: %s %s" % (response.status_code, response.json()))
     return response.json()
