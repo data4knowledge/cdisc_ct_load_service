@@ -33,7 +33,8 @@ class ActionCodeList(Action):
     previous_items = {}
     previous_dicts = {}
     scs = SkosConceptScheme.match(self.__db.graph()).where(uri=self.parent_uri).first()
-    previous = SkosConcept.latest(self.identifier)
+    #previous = SkosConcept.latest(self.identifier)
+    previous = scs.latest_code_list(self.identifier)
     if previous == None:
       version = "1"
       previous_dict = None
