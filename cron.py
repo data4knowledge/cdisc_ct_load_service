@@ -52,7 +52,10 @@ def action_until(until):
       errors = 0
       data = response.json()
       print(f'Success, data: {data}')
-      if "release_date" in data['next']:
+      if data['action_count'] == 0:
+        print('No more work ...')
+        execute = False
+      elif "release_date" in data['next']:
         current_dt = datetime.strptime(data['next']['release_date'], '%Y-%m-%d')
       elif "date" in data['next']:
         current_dt = datetime.strptime(data['next']['date'], '%Y-%m-%d')
